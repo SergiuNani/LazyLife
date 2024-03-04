@@ -41,7 +41,10 @@ function createObjectAndAppend(arr) {
 
 export function ExtractUsefulInfo(bodyHTML) {
   var parser = new DOMParser();
-  var xmlDoc = parser.parseFromString(bodyHTML, "text/html");
+  var xmlDoc = parser.parseFromString(
+    bodyHTML.replace(/<br>/g, " "),
+    "text/html"
+  );
   var HTML_XML = xmlDoc.querySelectorAll(".main_elem");
 
   //---------------------
@@ -70,7 +73,7 @@ export function ExtractUsefulInfo(bodyHTML) {
     var td_all = tr.querySelectorAll("td");
     if (th_all.length > 2) {
       //Table Head
-      console.log("🚀 ~ ExtractUsefulInfo ~ th_all:", th_all);
+      // console.log("🚀 ~ ExtractUsefulInfo ~ th_all:", th_all);
     } else {
       if (td_all.length > 9) {
         //we will include the arrays with 10 or 13 length and exclude the empty TD
