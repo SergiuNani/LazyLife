@@ -18,9 +18,10 @@ import Docxtemplater from "docxtemplater";
 import PizZip from "pizzip";
 import PizZipUtils from "pizzip/utils/index.js";
 import OfficialClaimTemplate from "./assets/officialClaim.txt";
-import { ExtractUsefulInfo } from "./testData";
+import { ExtractUsefulInfo } from "./Functions";
 function App() {
   const [htmlContent, setHtmlContent] = useState([]);
+  // const [htmlContent, setHtmlContent] = useState(ExtractUsefulInfo());
 
   const handleClick = () => {
     chrome.runtime.sendMessage({ action: "getHTML" }, (response) => {
@@ -56,18 +57,16 @@ function App() {
         <div
           style={{
             display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            flexDirection: "column",
           }}
         >
           {item.Data.map((el, idx) => (
-            <div
+            <section
+              key={idx + "45"}
               style={{
                 display: "flex",
-                justifyContent: "center",
+                justifyContent: "start",
                 alignItems: "center",
-                // border: `1px solid green`,
-                // padding: "0.3rem",
               }}
             >
               <p
@@ -79,17 +78,26 @@ function App() {
                 {idx + 1}
                 {"-"}
               </p>
-              {el.map((mini) => (
-                <p
+              {el.map((mini, id) => (
+                <div
+                  key={id}
                   style={{
-                    //  border: `1px solid yellow`,
-                    padding: "0.2rem",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  {mini}
-                </p>
+                  <p
+                    style={{
+                      padding: "0.2rem",
+                    }}
+                  >
+                    {mini}
+                  </p>
+                  <p style={{ color: "orange" }}> | </p>
+                </div>
               ))}
-            </div>
+            </section>
           ))}
         </div>
       </div>
@@ -99,9 +107,7 @@ function App() {
     <>
       <div>
         <h1>Lazy Life</h1>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={Drunk} className="logo" alt="Vite logo" />
-        </a>
+        <img src={Drunk} className="logo" alt="Vite logo" />
       </div>
       <div className="card">
         <button onClick={handleClick}>CLICK ME</button>
