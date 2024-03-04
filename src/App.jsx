@@ -23,7 +23,9 @@ import { HTML_original } from "./testData";
 
 function App() {
   const [htmlContent, setHtmlContent] = useState([]);
-  // const [htmlContent, setHtmlContent] = useState(ExtractUsefulInfo());
+  // const [htmlContent, setHtmlContent] = useState(
+  //   ExtractUsefulInfo(HTML_original)
+  // );
 
   const handleClick = () => {
     chrome.runtime.sendMessage({ action: "getHTML" }, (response) => {

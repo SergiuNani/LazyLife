@@ -7,10 +7,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           target: { tabId: activeTab.id },
           function: () => {
             //Print HTML
-            let bodyHTML1 =
+            let bodyHTML =
               document.querySelector("body .main_center").innerHTML;
-            console.log(JSON.stringify(bodyHTML1));
-            return bodyHTML1;
+            console.log(JSON.stringify(bodyHTML));
+            return bodyHTML;
           },
         },
         (results) => {
