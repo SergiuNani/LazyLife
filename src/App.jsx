@@ -18,9 +18,9 @@ import Docxtemplater from "docxtemplater";
 import PizZip from "pizzip";
 import PizZipUtils from "pizzip/utils/index.js";
 import OfficialClaimTemplate from "./assets/officialClaim.txt";
-import { ExtractUsefulInfo } from "./Functions";
+import { ExtractUsefulInfo, generateDoc } from "./Functions";
 import { HTML_original } from "./testData";
-
+import { renderHtmlContent } from "./AppHelper";
 function App() {
   // const [htmlContent, setHtmlContent] = useState([]);
   const [htmlContent, setHtmlContent] = useState(
@@ -43,7 +43,13 @@ function App() {
       </div>
       <div className="card">
         <button onClick={handleClick}>CLICK ME</button>
-        <button onClick={generateDoc}>To Word</button>
+        <button
+          onClick={() => {
+            generateDoc(htmlContent);
+          }}
+        >
+          To Word
+        </button>
         <button onClick={PrebuildGenerate}>WordPreBuild</button>
         <button
           onClick={() => {
@@ -63,81 +69,6 @@ function App() {
 
 export default App;
 
-const renderHtmlContent = (htmlContent) => {
-  return htmlContent.map((item, index) => (
-    <div
-      key={index}
-      style={{
-        fontSize: "0.7rem",
-        // border: `1px solid green`,
-        marginBottom: "1rem",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          fonWeight: "700",
-          color: "#008000",
-        }}
-      >
-        <p>PID: {item.PID} |</p>
-        <p>| Description: {item.Description} |</p>
-        <p>| Data: </p>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        {item.Data.map((el, idx) => (
-          <section
-            key={idx + "45"}
-            style={{
-              display: "flex",
-              justifyContent: "start",
-              alignItems: "center",
-            }}
-          >
-            <p
-              style={{
-                fontWeight: "700",
-                color: "#FF0000",
-              }}
-            >
-              {idx + 1}
-              {"-"}
-            </p>
-            {el.map((mini, id) => (
-              <div
-                key={id}
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <p
-                  style={{
-                    padding: "0.2rem",
-                  }}
-                >
-                  {mini}
-                </p>
-                <p style={{ color: "orange" }}> | </p>
-              </div>
-            ))}
-          </section>
-        ))}
-      </div>
-    </div>
-  ));
-};
-
 const loadFile = (url, callback) => {
   PizZipUtils.getBinaryContent(url, function (err, data) {
     if (err) {
@@ -155,11 +86,21 @@ const PrebuildGenerate = () => {
     if (error) {
       throw error;
     }
-    const zip = new PizZip(content); // Asserting content as not undefined or null
+    const zip = new PizZip(content);
     const doc = new Docxtemplater(zip, {
       paragraphLoop: true,
       linebreaks: true,
     });
+
+    const Table_obj = {
+      headers: ["Header 1", "Header 2", "Header 3"],
+      rows: [
+        ["Row 1 Cell 1", "Row 1 Cell 2", "Row 1 Cell 3"],
+        ["Row 2 Cell 1", "Row 2 Cell 2", "Row 2 Cell 3"],
+        ["Row 3 Cell 1", "Row 3 Cell 2", "Row 3 Cell 3"],
+      ],
+    };
+
     doc.setData({
       signing_location: "Toulouse",
       signing_date: `OPAOPAOPA`,
@@ -170,10 +111,14 @@ const PrebuildGenerate = () => {
       incident_location: "3 rue Ella Maillart, 31300 Toulouse",
       incident_timestamp: new Date().getFullYear(),
       bike_name: "Vélo de champion",
-      incident_description:
-        "Faits et actions avant, pendant, après le sinistre",
+      incident_description: {
+        // Pass the table object as an object
+        headers: Table_obj.headers,
+        rows: Table_obj.rows,
+      },
       customer_name: "Morio",
     });
+
     try {
       doc.render();
     } catch (error) {
@@ -188,155 +133,454 @@ const PrebuildGenerate = () => {
     saveAs(out, "déclaration_circonstanciée.docx");
   });
 };
-const generateDoc = async () => {
-  const doc = new Document({
-    sections: [
-      {
-        children: [
-          new Table({
-            rows: [
-              new TableRow({
-                children: [
-                  new TableCell({
-                    children: [new Paragraph({}), new Paragraph({})],
-                    verticalAlign: VerticalAlign.CENTER,
-                  }),
-                  new TableCell({
-                    children: [new Paragraph({}), new Paragraph({})],
-                    verticalAlign: VerticalAlign.CENTER,
-                  }),
-                  new TableCell({
-                    children: [
-                      new Paragraph({ text: "bottom to top" }),
-                      new Paragraph({}),
-                    ],
-                    textDirection: TextDirection.BOTTOM_TO_TOP_LEFT_TO_RIGHT,
-                  }),
-                  new TableCell({
-                    children: [
-                      new Paragraph({ text: "top to bottom" }),
-                      new Paragraph({}),
-                    ],
-                    textDirection: TextDirection.TOP_TO_BOTTOM_RIGHT_TO_LEFT,
-                  }),
-                ],
-              }),
-              new TableRow({
-                children: [
-                  new TableCell({
-                    children: [
-                      new Paragraph({
-                        text: "Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah",
-                        heading: HeadingLevel.HEADING_1,
-                      }),
-                    ],
-                  }),
-                  new TableCell({
-                    children: [
-                      new Paragraph({
-                        text: "This text should be in the middle of the cell",
-                      }),
-                    ],
-                    verticalAlign: VerticalAlign.CENTER,
-                  }),
-                  new TableCell({
-                    children: [
-                      new Paragraph({
-                        text: "Text above should be vertical from bottom to top",
-                      }),
-                    ],
-                    verticalAlign: VerticalAlign.CENTER,
-                  }),
-                  new TableCell({
-                    children: [
-                      new Paragraph({
-                        text: "Text above should be vertical from top to bottom",
-                      }),
-                    ],
-                    verticalAlign: VerticalAlign.CENTER,
-                  }),
-                ],
-              }),
 
-              new TableRow({
-                children: [
-                  new TableCell({
-                    children: [
-                      new Paragraph({
-                        text: "Blah Blah Blah Blah Blah ",
-                        heading: HeadingLevel.HEADING_1,
-                      }),
-                    ],
-                  }),
-                  new TableCell({
-                    children: [
-                      new Paragraph({
-                        text: "This text should be in the middle of the cell",
-                      }),
-                    ],
-                    borders: {
-                      top: {
-                        style: BorderStyle.DASH_DOT_STROKED,
-                        size: 1,
-                        color: "ff0000",
-                      },
-                      bottom: {
-                        style: BorderStyle.THICK_THIN_MEDIUM_GAP,
-                        size: 5,
-                        color: "889900",
-                      },
-                    },
-                    verticalAlign: VerticalAlign.CENTER,
-                  }),
-                  new TableCell({
-                    children: [
-                      new Paragraph({
-                        text: "Text above should be vertical from bottom to top",
-                      }),
-                    ],
-                    verticalAlign: VerticalAlign.CENTER,
-                  }),
-                  new TableCell({
-                    children: [
-                      new Paragraph({
-                        text: "Text above should be vertical from top to bottom",
-                      }),
-                    ],
-                    borders: {
-                      top: {
-                        style: BorderStyle.DASH_DOT_STROKED,
-                        size: 3,
-                        color: "FF0000",
-                      },
-                      bottom: {
-                        style: BorderStyle.DOUBLE,
-                        size: 3,
-                        color: "0000FF",
-                      },
-                      left: {
-                        style: BorderStyle.DASH_DOT_STROKED,
-                        size: 3,
-                        color: "00FF00",
-                      },
-                      right: {
-                        style: BorderStyle.DASH_DOT_STROKED,
-                        size: 3,
-                        color: "#ff8000",
-                      },
-                    },
-                    verticalAlign: VerticalAlign.CENTER,
-                  }),
-                ],
-              }),
-            ],
-          }),
-        ],
-      },
-    ],
-  });
-
-  Packer.toBlob(doc).then((blob) => {
-    saveAs(blob, "example.docx");
-    console.log("Document created successfully");
-  });
+const Table_obj = {
+  customer_name: "Franck",
+  tableXml: `
+  
+  
+  <w:tbl>
+  <w:tblPr>
+    <w:jc w:val="left"/>
+    <w:tblInd w:type="dxa" w:w="12"/>
+    <w:tblBorders>
+      <w:top w:color="00000A" w:space="0" w:sz="18" w:val="single"/>
+      <w:left w:val="nil"/>
+      <w:bottom w:color="00000A" w:space="0" w:sz="18" w:val="single"/>
+      <w:insideH w:color="00000A" w:space="0" w:sz="18" w:val="single"/>
+      <w:right w:val="nil"/>
+      <w:insideV w:val="nil"/>
+    </w:tblBorders>
+    <w:tblCellMar>
+      <w:top w:type="dxa" w:w="0"/>
+      <w:left w:type="dxa" w:w="108"/>
+      <w:bottom w:type="dxa" w:w="0"/>
+      <w:right w:type="dxa" w:w="108"/>
+    </w:tblCellMar>
+  </w:tblPr>
+  <w:tblGrid>
+    <w:gridCol w:w="1797"/>
+    <w:gridCol w:w="2444"/>
+    <w:gridCol w:w="2458"/>
+    <w:gridCol w:w="1790"/>
+  </w:tblGrid>
+  <w:tr>
+    <w:trPr>
+      <w:cantSplit w:val="false"/>
+    </w:trPr>
+    <w:tc>
+      <w:tcPr>
+        <w:tcW w:type="dxa" w:w="1797"/>
+        <w:tcBorders>
+          <w:top w:color="00000A" w:space="0" w:sz="18" w:val="single"/>
+          <w:left w:val="nil"/>
+          <w:bottom w:color="00000A" w:space="0" w:sz="18" w:val="single"/>
+          <w:right w:val="nil"/>
+        </w:tcBorders>
+        <w:shd w:fill="4472C4" w:val="clear"/>
+      </w:tcPr>
+      <w:p>
+        <w:pPr>
+          <w:pStyle w:val="style0"/>
+          <w:tabs>
+            <w:tab w:leader="none" w:pos="955" w:val="center"/>
+          </w:tabs>
+          <w:spacing w:after="0" w:before="0" w:line="100" w:lineRule="atLeast"/>
+          <w:contextualSpacing w:val="false"/>
+          <w:jc w:val="center"/>
+          <w:rPr>
+            <w:b/>
+            <w:bCs/>
+            <w:color w:val="FFFFFF"/>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:b/>
+            <w:bCs/>
+            <w:color w:val="FFFFFF"/>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+          <w:t>COLUMN1</w:t>
+        </w:r>
+      </w:p>
+    </w:tc>
+    <w:tc>
+      <w:tcPr>
+        <w:tcW w:type="dxa" w:w="2444"/>
+        <w:tcBorders>
+          <w:top w:color="00000A" w:space="0" w:sz="18" w:val="single"/>
+          <w:left w:val="nil"/>
+          <w:bottom w:color="00000A" w:space="0" w:sz="18" w:val="single"/>
+          <w:right w:val="nil"/>
+        </w:tcBorders>
+        <w:shd w:fill="4472C4" w:val="clear"/>
+      </w:tcPr>
+      <w:p>
+        <w:pPr>
+          <w:pStyle w:val="style0"/>
+          <w:spacing w:after="0" w:before="0" w:line="100" w:lineRule="atLeast"/>
+          <w:contextualSpacing w:val="false"/>
+          <w:jc w:val="center"/>
+          <w:rPr>
+            <w:b/>
+            <w:bCs/>
+            <w:color w:val="FFFFFF"/>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:b/>
+            <w:bCs/>
+            <w:color w:val="FFFFFF"/>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+          <w:t>COLUMN2</w:t>
+        </w:r>
+      </w:p>
+    </w:tc>
+    <w:tc>
+      <w:tcPr>
+        <w:tcW w:type="dxa" w:w="2458"/>
+        <w:tcBorders>
+          <w:top w:color="00000A" w:space="0" w:sz="18" w:val="single"/>
+          <w:left w:val="nil"/>
+          <w:bottom w:color="00000A" w:space="0" w:sz="18" w:val="single"/>
+          <w:right w:val="nil"/>
+        </w:tcBorders>
+        <w:shd w:fill="4472C4" w:val="clear"/>
+      </w:tcPr>
+      <w:p>
+        <w:pPr>
+          <w:pStyle w:val="style0"/>
+          <w:spacing w:after="0" w:before="0" w:line="100" w:lineRule="atLeast"/>
+          <w:contextualSpacing w:val="false"/>
+          <w:jc w:val="center"/>
+          <w:rPr>
+            <w:b/>
+            <w:bCs/>
+            <w:color w:val="FFFFFF"/>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:b/>
+            <w:bCs/>
+            <w:color w:val="FFFFFF"/>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+          <w:t>COLUMN3</w:t>
+        </w:r>
+      </w:p>
+    </w:tc>
+    <w:tc>
+      <w:tcPr>
+        <w:tcW w:type="dxa" w:w="1790"/>
+        <w:tcBorders>
+          <w:top w:color="00000A" w:space="0" w:sz="18" w:val="single"/>
+          <w:left w:val="nil"/>
+          <w:bottom w:color="00000A" w:space="0" w:sz="18" w:val="single"/>
+          <w:right w:val="nil"/>
+        </w:tcBorders>
+        <w:shd w:fill="4472C4" w:val="clear"/>
+      </w:tcPr>
+      <w:p>
+        <w:pPr>
+          <w:pStyle w:val="style0"/>
+          <w:spacing w:after="0" w:before="0" w:line="100" w:lineRule="atLeast"/>
+          <w:contextualSpacing w:val="false"/>
+          <w:jc w:val="center"/>
+          <w:rPr>
+            <w:b/>
+            <w:bCs/>
+            <w:color w:val="FFFFFF"/>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:b/>
+            <w:bCs/>
+            <w:color w:val="FFFFFF"/>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+          <w:t>COLUMN4</w:t>
+        </w:r>
+      </w:p>
+    </w:tc>
+  </w:tr>
+  <w:tr>
+    <w:trPr>
+      <w:cantSplit w:val="false"/>
+    </w:trPr>
+    <w:tc>
+      <w:tcPr>
+        <w:tcW w:type="dxa" w:w="1797"/>
+        <w:tcBorders>
+          <w:top w:val="nil"/>
+          <w:left w:val="nil"/>
+          <w:bottom w:val="nil"/>
+          <w:right w:val="nil"/>
+        </w:tcBorders>
+        <w:shd w:fill="FFFFFF" w:val="clear"/>
+      </w:tcPr>
+      <w:p>
+        <w:pPr>
+          <w:pStyle w:val="style0"/>
+          <w:spacing w:after="0" w:before="0" w:line="100" w:lineRule="atLeast"/>
+          <w:contextualSpacing w:val="false"/>
+          <w:jc w:val="center"/>
+          <w:rPr>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+          <w:t> #table1  t1data1 </w:t>
+        </w:r>
+      </w:p>
+    </w:tc>
+    <w:tc>
+      <w:tcPr>
+        <w:tcW w:type="dxa" w:w="2444"/>
+        <w:tcBorders>
+          <w:top w:val="nil"/>
+          <w:left w:val="nil"/>
+          <w:bottom w:val="nil"/>
+          <w:right w:val="nil"/>
+        </w:tcBorders>
+        <w:shd w:fill="FFFFFF" w:val="clear"/>
+      </w:tcPr>
+      <w:p>
+        <w:pPr>
+          <w:pStyle w:val="style32"/>
+          <w:spacing w:after="0" w:before="0" w:line="100" w:lineRule="atLeast"/>
+          <w:contextualSpacing w:val="false"/>
+          <w:jc w:val="center"/>
+          <w:rPr>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+          <w:t> t1data2 </w:t>
+        </w:r>
+      </w:p>
+    </w:tc>
+    <w:tc>
+      <w:tcPr>
+        <w:tcW w:type="dxa" w:w="2458"/>
+        <w:tcBorders>
+          <w:top w:val="nil"/>
+          <w:left w:val="nil"/>
+          <w:bottom w:val="nil"/>
+          <w:right w:val="nil"/>
+        </w:tcBorders>
+        <w:shd w:fill="FFFFFF" w:val="clear"/>
+      </w:tcPr>
+      <w:p>
+        <w:pPr>
+          <w:pStyle w:val="style32"/>
+          <w:spacing w:after="0" w:before="0" w:line="100" w:lineRule="atLeast"/>
+          <w:contextualSpacing w:val="false"/>
+          <w:jc w:val="center"/>
+          <w:rPr>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+          <w:t> t1data3 </w:t>
+        </w:r>
+      </w:p>
+    </w:tc>
+    <w:tc>
+      <w:tcPr>
+        <w:tcW w:type="dxa" w:w="1790"/>
+        <w:tcBorders>
+          <w:top w:val="nil"/>
+          <w:left w:val="nil"/>
+          <w:bottom w:val="nil"/>
+          <w:right w:val="nil"/>
+        </w:tcBorders>
+        <w:shd w:fill="FFFFFF" w:val="clear"/>
+      </w:tcPr>
+      <w:p>
+        <w:pPr>
+          <w:pStyle w:val="style32"/>
+          <w:spacing w:after="0" w:before="0" w:line="100" w:lineRule="atLeast"/>
+          <w:contextualSpacing w:val="false"/>
+          <w:jc w:val="center"/>
+          <w:rPr>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+          <w:t> t1data4  /table1 </w:t>
+        </w:r>
+      </w:p>
+    </w:tc>
+  </w:tr>
+  <w:tr>
+    <w:trPr>
+      <w:cantSplit w:val="false"/>
+    </w:trPr>
+    <w:tc>
+      <w:tcPr>
+        <w:tcW w:type="dxa" w:w="1797"/>
+        <w:tcBorders>
+          <w:top w:color="00000A" w:space="0" w:sz="6" w:val="double"/>
+          <w:left w:val="nil"/>
+          <w:bottom w:color="00000A" w:space="0" w:sz="18" w:val="single"/>
+          <w:right w:val="nil"/>
+        </w:tcBorders>
+        <w:shd w:fill="FFFFFF" w:val="clear"/>
+      </w:tcPr>
+      <w:p>
+        <w:pPr>
+          <w:pStyle w:val="style0"/>
+          <w:spacing w:after="0" w:before="0" w:line="100" w:lineRule="atLeast"/>
+          <w:contextualSpacing w:val="false"/>
+          <w:jc w:val="center"/>
+          <w:rPr>
+            <w:b/>
+            <w:color w:val="00000A"/>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:b/>
+            <w:color w:val="00000A"/>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+          <w:t>TOTAL</w:t>
+        </w:r>
+      </w:p>
+    </w:tc>
+    <w:tc>
+      <w:tcPr>
+        <w:tcW w:type="dxa" w:w="2444"/>
+        <w:tcBorders>
+          <w:top w:color="00000A" w:space="0" w:sz="6" w:val="double"/>
+          <w:left w:val="nil"/>
+          <w:bottom w:color="00000A" w:space="0" w:sz="18" w:val="single"/>
+          <w:right w:val="nil"/>
+        </w:tcBorders>
+        <w:shd w:fill="FFFFFF" w:val="clear"/>
+      </w:tcPr>
+      <w:p>
+        <w:pPr>
+          <w:pStyle w:val="style32"/>
+          <w:spacing w:after="0" w:before="0" w:line="100" w:lineRule="atLeast"/>
+          <w:contextualSpacing w:val="false"/>
+          <w:jc w:val="center"/>
+          <w:rPr>
+            <w:b/>
+            <w:color w:val="00000A"/>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:b/>
+            <w:color w:val="00000A"/>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+          <w:t> t1total1 </w:t>
+        </w:r>
+      </w:p>
+    </w:tc>
+    <w:tc>
+      <w:tcPr>
+        <w:tcW w:type="dxa" w:w="2458"/>
+        <w:tcBorders>
+          <w:top w:color="00000A" w:space="0" w:sz="6" w:val="double"/>
+          <w:left w:val="nil"/>
+          <w:bottom w:color="00000A" w:space="0" w:sz="18" w:val="single"/>
+          <w:right w:val="nil"/>
+        </w:tcBorders>
+        <w:shd w:fill="FFFFFF" w:val="clear"/>
+      </w:tcPr>
+      <w:p>
+        <w:pPr>
+          <w:pStyle w:val="style32"/>
+          <w:spacing w:after="0" w:before="0" w:line="100" w:lineRule="atLeast"/>
+          <w:contextualSpacing w:val="false"/>
+          <w:jc w:val="center"/>
+          <w:rPr>
+            <w:b/>
+            <w:color w:val="00000A"/>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:b/>
+            <w:color w:val="00000A"/>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+          <w:t> t1total2 </w:t>
+        </w:r>
+      </w:p>
+    </w:tc>
+    <w:tc>
+      <w:tcPr>
+        <w:tcW w:type="dxa" w:w="1790"/>
+        <w:tcBorders>
+          <w:top w:color="00000A" w:space="0" w:sz="6" w:val="double"/>
+          <w:left w:val="nil"/>
+          <w:bottom w:color="00000A" w:space="0" w:sz="18" w:val="single"/>
+          <w:right w:val="nil"/>
+        </w:tcBorders>
+        <w:shd w:fill="FFFFFF" w:val="clear"/>
+      </w:tcPr>
+      <w:p>
+        <w:pPr>
+          <w:pStyle w:val="style32"/>
+          <w:spacing w:after="0" w:before="0" w:line="100" w:lineRule="atLeast"/>
+          <w:contextualSpacing w:val="false"/>
+          <w:jc w:val="center"/>
+          <w:rPr>
+            <w:b/>
+            <w:color w:val="00000A"/>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+        </w:pPr>
+        <w:r>
+          <w:rPr>
+            <w:b/>
+            <w:color w:val="00000A"/>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+          <w:t> </w:t>
+        </w:r>
+        <w:bookmarkStart w:id="0" w:name="_GoBack2"/>
+        <w:bookmarkEnd w:id="0"/>
+        <w:r>
+          <w:rPr>
+            <w:b/>
+            <w:color w:val="00000A"/>
+            <w:lang w:val="en-US"/>
+          </w:rPr>
+          <w:t>t1total3 </w:t>
+        </w:r>
+      </w:p>
+    </w:tc>
+  </w:tr>
+</w:tbl>
+  
+  `,
 };
