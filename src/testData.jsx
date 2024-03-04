@@ -10,6 +10,34 @@ was changed to RQ9992.</textarea></span><sub><a style="font-size:2px" href="#" o
 let DetaliiRMA = {};
 let MainTable = [];
 
+function createObjectAndAppend(arr) {
+  if (arr.length == 13) {
+    //Create a new object
+    var obj = {};
+    var ArrayOfObjects = [];
+    var textArr = [];
+
+    obj["PID"] = arr[0].querySelector("span").innerText;
+    obj["Description"] = arr[1].querySelector("span").innerText;
+
+    arr = arr.slice(3).slice(0, -1);
+    arr.forEach((el, index) => {
+      textArr[index] = el.querySelector("span").innerText;
+      if (index == 3) {
+        textArr[index] = el.querySelector("input").checked;
+      }
+    });
+    ArrayOfObjects.push(textArr);
+
+    obj["Data"] = ArrayOfObjects;
+
+    console.log("-------------------------------------------------");
+    MainTable.push(obj);
+  } else if (arr.length == 10) {
+    //take the last object and add to it
+  }
+}
+
 export function ExtractUsefulInfo() {
   var parser = new DOMParser();
   var xmlDoc = parser.parseFromString(HTML_original, "text/html");
@@ -53,32 +81,4 @@ export function ExtractUsefulInfo() {
   console.log("SSSS");
   console.log(MainTable);
   return MainTable;
-}
-
-function createObjectAndAppend(arr) {
-  if (arr.length == 13) {
-    //Create a new object
-    var obj = {};
-    var ArrayOfObjects = [];
-    var textArr = [];
-
-    obj["PID"] = arr[0].querySelector("span").innerText;
-    obj["Description"] = arr[1].querySelector("span").innerText;
-
-    arr = arr.slice(3).slice(0, -1);
-    arr.forEach((el, index) => {
-      textArr[index] = el.querySelector("span").innerText;
-      if (index == 3) {
-        textArr[index] = el.querySelector("input").checked;
-      }
-    });
-    ArrayOfObjects.push(textArr);
-
-    obj["Data"] = ArrayOfObjects;
-
-    console.log("-------------------------------------------------");
-    MainTable.push(obj);
-  } else if (arr.length == 10) {
-    //take the last object and add to it
-  }
 }

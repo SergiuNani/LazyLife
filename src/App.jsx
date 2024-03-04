@@ -20,7 +20,7 @@ import PizZipUtils from "pizzip/utils/index.js";
 import OfficialClaimTemplate from "./assets/officialClaim.txt";
 import { ExtractUsefulInfo } from "./testData";
 function App() {
-  const [htmlContent, setHtmlContent] = useState("");
+  const [htmlContent, setHtmlContent] = useState([]);
 
   const handleClick = () => {
     chrome.runtime.sendMessage({ action: "getHTML" }, (response) => {
@@ -28,158 +28,72 @@ function App() {
       setHtmlContent(bodyHTML);
     });
   };
-
-  const generateDoc = async () => {
-    const doc = new Document({
-      sections: [
-        {
-          children: [
-            new Table({
-              rows: [
-                new TableRow({
-                  children: [
-                    new TableCell({
-                      children: [new Paragraph({}), new Paragraph({})],
-                      verticalAlign: VerticalAlign.CENTER,
-                    }),
-                    new TableCell({
-                      children: [new Paragraph({}), new Paragraph({})],
-                      verticalAlign: VerticalAlign.CENTER,
-                    }),
-                    new TableCell({
-                      children: [
-                        new Paragraph({ text: "bottom to top" }),
-                        new Paragraph({}),
-                      ],
-                      textDirection: TextDirection.BOTTOM_TO_TOP_LEFT_TO_RIGHT,
-                    }),
-                    new TableCell({
-                      children: [
-                        new Paragraph({ text: "top to bottom" }),
-                        new Paragraph({}),
-                      ],
-                      textDirection: TextDirection.TOP_TO_BOTTOM_RIGHT_TO_LEFT,
-                    }),
-                  ],
-                }),
-                new TableRow({
-                  children: [
-                    new TableCell({
-                      children: [
-                        new Paragraph({
-                          text: "Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah",
-                          heading: HeadingLevel.HEADING_1,
-                        }),
-                      ],
-                    }),
-                    new TableCell({
-                      children: [
-                        new Paragraph({
-                          text: "This text should be in the middle of the cell",
-                        }),
-                      ],
-                      verticalAlign: VerticalAlign.CENTER,
-                    }),
-                    new TableCell({
-                      children: [
-                        new Paragraph({
-                          text: "Text above should be vertical from bottom to top",
-                        }),
-                      ],
-                      verticalAlign: VerticalAlign.CENTER,
-                    }),
-                    new TableCell({
-                      children: [
-                        new Paragraph({
-                          text: "Text above should be vertical from top to bottom",
-                        }),
-                      ],
-                      verticalAlign: VerticalAlign.CENTER,
-                    }),
-                  ],
-                }),
-
-                new TableRow({
-                  children: [
-                    new TableCell({
-                      children: [
-                        new Paragraph({
-                          text: "Blah Blah Blah Blah Blah ",
-                          heading: HeadingLevel.HEADING_1,
-                        }),
-                      ],
-                    }),
-                    new TableCell({
-                      children: [
-                        new Paragraph({
-                          text: "This text should be in the middle of the cell",
-                        }),
-                      ],
-                      borders: {
-                        top: {
-                          style: BorderStyle.DASH_DOT_STROKED,
-                          size: 1,
-                          color: "ff0000",
-                        },
-                        bottom: {
-                          style: BorderStyle.THICK_THIN_MEDIUM_GAP,
-                          size: 5,
-                          color: "889900",
-                        },
-                      },
-                      verticalAlign: VerticalAlign.CENTER,
-                    }),
-                    new TableCell({
-                      children: [
-                        new Paragraph({
-                          text: "Text above should be vertical from bottom to top",
-                        }),
-                      ],
-                      verticalAlign: VerticalAlign.CENTER,
-                    }),
-                    new TableCell({
-                      children: [
-                        new Paragraph({
-                          text: "Text above should be vertical from top to bottom",
-                        }),
-                      ],
-                      borders: {
-                        top: {
-                          style: BorderStyle.DASH_DOT_STROKED,
-                          size: 3,
-                          color: "FF0000",
-                        },
-                        bottom: {
-                          style: BorderStyle.DOUBLE,
-                          size: 3,
-                          color: "0000FF",
-                        },
-                        left: {
-                          style: BorderStyle.DASH_DOT_STROKED,
-                          size: 3,
-                          color: "00FF00",
-                        },
-                        right: {
-                          style: BorderStyle.DASH_DOT_STROKED,
-                          size: 3,
-                          color: "#ff8000",
-                        },
-                      },
-                      verticalAlign: VerticalAlign.CENTER,
-                    }),
-                  ],
-                }),
-              ],
-            }),
-          ],
-        },
-      ],
-    });
-
-    Packer.toBlob(doc).then((blob) => {
-      saveAs(blob, "example.docx");
-      console.log("Document created successfully");
-    });
+  const renderHtmlContent = () => {
+    return htmlContent.map((item, index) => (
+      <div
+        key={index}
+        style={{
+          fontSize: "0.7rem",
+          // border: `1px solid green`,
+          marginBottom: "1rem",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            fonWeight: "700",
+            color: "#008000",
+          }}
+        >
+          <p>PID: {item.PID} |</p>
+          <p>| Description: {item.Description} |</p>
+          <p>| Data: </p>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {item.Data.map((el, idx) => (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                // border: `1px solid green`,
+                // padding: "0.3rem",
+              }}
+            >
+              <p
+                style={{
+                  fontWeight: "700",
+                  color: "#FF0000",
+                }}
+              >
+                {idx + 1}
+                {"-"}
+              </p>
+              {el.map((mini) => (
+                <p
+                  style={{
+                    //  border: `1px solid yellow`,
+                    padding: "0.2rem",
+                  }}
+                >
+                  {mini}
+                </p>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    ));
   };
   return (
     <>
@@ -203,7 +117,7 @@ function App() {
           ShowExtraction
         </button>
 
-        <div>{htmlContent}</div>
+        <div>{renderHtmlContent()}</div>
       </div>
     </>
   );
@@ -259,5 +173,157 @@ const PrebuildGenerate = () => {
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     });
     saveAs(out, "déclaration_circonstanciée.docx");
+  });
+};
+const generateDoc = async () => {
+  const doc = new Document({
+    sections: [
+      {
+        children: [
+          new Table({
+            rows: [
+              new TableRow({
+                children: [
+                  new TableCell({
+                    children: [new Paragraph({}), new Paragraph({})],
+                    verticalAlign: VerticalAlign.CENTER,
+                  }),
+                  new TableCell({
+                    children: [new Paragraph({}), new Paragraph({})],
+                    verticalAlign: VerticalAlign.CENTER,
+                  }),
+                  new TableCell({
+                    children: [
+                      new Paragraph({ text: "bottom to top" }),
+                      new Paragraph({}),
+                    ],
+                    textDirection: TextDirection.BOTTOM_TO_TOP_LEFT_TO_RIGHT,
+                  }),
+                  new TableCell({
+                    children: [
+                      new Paragraph({ text: "top to bottom" }),
+                      new Paragraph({}),
+                    ],
+                    textDirection: TextDirection.TOP_TO_BOTTOM_RIGHT_TO_LEFT,
+                  }),
+                ],
+              }),
+              new TableRow({
+                children: [
+                  new TableCell({
+                    children: [
+                      new Paragraph({
+                        text: "Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah Blah",
+                        heading: HeadingLevel.HEADING_1,
+                      }),
+                    ],
+                  }),
+                  new TableCell({
+                    children: [
+                      new Paragraph({
+                        text: "This text should be in the middle of the cell",
+                      }),
+                    ],
+                    verticalAlign: VerticalAlign.CENTER,
+                  }),
+                  new TableCell({
+                    children: [
+                      new Paragraph({
+                        text: "Text above should be vertical from bottom to top",
+                      }),
+                    ],
+                    verticalAlign: VerticalAlign.CENTER,
+                  }),
+                  new TableCell({
+                    children: [
+                      new Paragraph({
+                        text: "Text above should be vertical from top to bottom",
+                      }),
+                    ],
+                    verticalAlign: VerticalAlign.CENTER,
+                  }),
+                ],
+              }),
+
+              new TableRow({
+                children: [
+                  new TableCell({
+                    children: [
+                      new Paragraph({
+                        text: "Blah Blah Blah Blah Blah ",
+                        heading: HeadingLevel.HEADING_1,
+                      }),
+                    ],
+                  }),
+                  new TableCell({
+                    children: [
+                      new Paragraph({
+                        text: "This text should be in the middle of the cell",
+                      }),
+                    ],
+                    borders: {
+                      top: {
+                        style: BorderStyle.DASH_DOT_STROKED,
+                        size: 1,
+                        color: "ff0000",
+                      },
+                      bottom: {
+                        style: BorderStyle.THICK_THIN_MEDIUM_GAP,
+                        size: 5,
+                        color: "889900",
+                      },
+                    },
+                    verticalAlign: VerticalAlign.CENTER,
+                  }),
+                  new TableCell({
+                    children: [
+                      new Paragraph({
+                        text: "Text above should be vertical from bottom to top",
+                      }),
+                    ],
+                    verticalAlign: VerticalAlign.CENTER,
+                  }),
+                  new TableCell({
+                    children: [
+                      new Paragraph({
+                        text: "Text above should be vertical from top to bottom",
+                      }),
+                    ],
+                    borders: {
+                      top: {
+                        style: BorderStyle.DASH_DOT_STROKED,
+                        size: 3,
+                        color: "FF0000",
+                      },
+                      bottom: {
+                        style: BorderStyle.DOUBLE,
+                        size: 3,
+                        color: "0000FF",
+                      },
+                      left: {
+                        style: BorderStyle.DASH_DOT_STROKED,
+                        size: 3,
+                        color: "00FF00",
+                      },
+                      right: {
+                        style: BorderStyle.DASH_DOT_STROKED,
+                        size: 3,
+                        color: "#ff8000",
+                      },
+                    },
+                    verticalAlign: VerticalAlign.CENTER,
+                  }),
+                ],
+              }),
+            ],
+          }),
+        ],
+      },
+    ],
+  });
+
+  Packer.toBlob(doc).then((blob) => {
+    saveAs(blob, "example.docx");
+    console.log("Document created successfully");
   });
 };
