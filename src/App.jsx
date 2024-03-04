@@ -19,6 +19,8 @@ import PizZip from "pizzip";
 import PizZipUtils from "pizzip/utils/index.js";
 import OfficialClaimTemplate from "./assets/officialClaim.txt";
 import { ExtractUsefulInfo } from "./Functions";
+import { HTML_original } from "./testData";
+
 function App() {
   const [htmlContent, setHtmlContent] = useState([]);
   // const [htmlContent, setHtmlContent] = useState(ExtractUsefulInfo());
@@ -26,7 +28,8 @@ function App() {
   const handleClick = () => {
     chrome.runtime.sendMessage({ action: "getHTML" }, (response) => {
       const bodyHTML = response.bodyHTML;
-      setHtmlContent(bodyHTML);
+      // setHtmlContent(bodyHTML);
+      setHtmlContent(ExtractUsefulInfo(bodyHTML));
     });
   };
   const renderHtmlContent = () => {
@@ -115,8 +118,7 @@ function App() {
         <button onClick={PrebuildGenerate}>WordPreBuild</button>
         <button
           onClick={() => {
-            const arr = ExtractUsefulInfo();
-
+            const arr = ExtractUsefulInfo(HTML_original);
             setHtmlContent(arr);
           }}
         >
@@ -124,6 +126,7 @@ function App() {
         </button>
 
         <div>{renderHtmlContent()}</div>
+        {/* <div>{htmlContent}</div> */}
       </div>
     </>
   );

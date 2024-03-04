@@ -1,4 +1,3 @@
-import { HTML_original } from "./testData";
 let DetaliiRMA = {};
 let MainTable = [];
 
@@ -26,12 +25,9 @@ function createObjectAndAppend(arr) {
     MainTable.push(obj);
   } else if (arr.length == 10) {
     //take the last object and add to it
-    // console.log(arr);
+
     var textArr = [];
     arr = arr.slice(0, -1);
-    // arr.forEach((el) => {
-    //   console.log(el.innerText);
-    // });
 
     arr.forEach((el, index) => {
       textArr[index] = el.querySelector("span").innerText;
@@ -43,9 +39,9 @@ function createObjectAndAppend(arr) {
   }
 }
 
-export function ExtractUsefulInfo() {
+export function ExtractUsefulInfo(bodyHTML) {
   var parser = new DOMParser();
-  var xmlDoc = parser.parseFromString(HTML_original, "text/html");
+  var xmlDoc = parser.parseFromString(bodyHTML, "text/html");
   var HTML_XML = xmlDoc.querySelectorAll(".main_elem");
 
   //---------------------
