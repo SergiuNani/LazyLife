@@ -1,0 +1,25 @@
+{
+    "manifest_version": 3,
+    "name": "LazyLife",
+    "description": "Runs a script when the user clicks the action toolbar icon.",
+    "version": "1.0",
+    "action": {
+        "default_popup":"index.html"
+    },
+    "permissions": ["scripting", "activeTab","nativeMessaging","contextMenus","tabs"],
+    "host_permissions": [
+        "http://*/*",
+        "https://*/*"
+    ],
+    "icons": {
+        "32": "Gabi.png",
+        "64": "Gabi.png"
+
+    },
+    "background":{
+        "service_worker": "background.js",
+        "type": "module"
+
+    }
+  
+  }
