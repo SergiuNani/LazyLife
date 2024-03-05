@@ -6,6 +6,7 @@ import { HTML_original } from "./testData";
 import { renderHtmlContent } from "./AppHelper";
 import { DocxTemplaterX } from "./DocxTemplater";
 import { generateDocument } from "./generic";
+
 function App() {
   // const [htmlContent, setHtmlContent] = useState([]);
   const [htmlContent, setHtmlContent] = useState(

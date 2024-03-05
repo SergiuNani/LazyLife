@@ -109,35 +109,4 @@ const Table_obj = {
   ],
 };
 
-export const DocxTemplaterX = () => {
-  const Template = testDoc;
-
-  loadFile(Template, (error, content) => {
-    if (error) {
-      throw error;
-    }
-    const zip = new PizZip(content);
-    const doc = new Docxtemplater(zip, {
-      paragraphLoop: true,
-      linebreaks: true,
-    });
-
-    doc.setData({
-      bike_name: "Vélo de champion",
-      table1: Table_obj,
-    });
-
-    try {
-      doc.render();
-    } catch (error) {
-      console.log("ERROR chief:", error);
-      throw error;
-    }
-    const out = doc.getZip().generate({
-      type: "blob",
-      mimeType:
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    });
-    saveAs(out, "xxxxx.docx");
-  });
-};
+export const DocxTemplaterX = () => {};

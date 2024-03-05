@@ -1,31 +1,66 @@
-import fs from "fs";
+import { useState } from "react";
+import PizZip from "pizzip";
 import Docxtemplater from "docxtemplater";
-// import PizZip from "pizzip";
-// import unzipper from "unzipper";
-import testDoc from "./assets/textDoc.txt";
 
-export async function generateDocument() {
-  const fs = require("fs");
-  const SlidesModule = require("docxtemplater-slides-module");
+import Template from "./assets/textDoc.txt";
+// const fs = require("fs");
+// const path = require("path");
+// const PizZip = require("pizzip");
+// const Docxtemplater = require("docxtemplater");
 
-  const doc = new Docxtemplater(zip, {
-    modules: [new SlidesModule()],
-  });
-  doc.render({
-    mainTitle: "My title",
-    users: [
-      { name: "Franck", phone: "+665432131" },
-      { name: "Jim", phone: "+6234468468" },
-      { name: "Joe", phone: "+78788787" },
-      { name: "Hugh", phone: "03566456465" },
-    ],
-    foo: "bar",
-  });
+export const generateDocument = () => {
+  fetch(Template)
+    .then((response) => response.arrayBuffer())
+    .then((buffer) => {
+      const zip = new PizZip(buffer);
+      const outputDocument = new Docxtemplater(zip);
 
-  const buffer = doc.getZip().generate({
-    type: "nodebuffer",
-    compression: "DEFLATE",
-  });
+      // const dataToAdd = {}; // Set your data here
 
-  fs.writeFile("test.docx", buffer);
-}
+      const dataToAdd = {
+        employeeList: [
+          { id: 28521, name: "Frank", age: 34, city: "Melbourne" },
+          { id: 84973, name: "Chloe", age: 28, city: "Perth" },
+          { id: 10349, name: "Hank", age: 68, city: "Hobart" },
+          { id: 44586, name: "Gordon", age: 47, city: "Melbourne" },
+        ],
+      };
+      outputDocument.setData(dataToAdd);
+
+      try {
+        // Attempt to render the document (Add data to the template)
+        outputDocument.render();
+
+        // Create a Blob containing the output data
+        const outputDocumentBlob = new Blob(
+          [outputDocument.getZip().generate({ type: "uint8array" })],
+          {
+            type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          }
+        );
+
+        // Create a URL for the Blob
+        const url = window.URL.createObjectURL(outputDocumentBlob);
+
+        // Create a temporary link element
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "OUTPUT.docx"); // Set the filename
+
+        // Simulate click to trigger the download
+        document.body.appendChild(link);
+        link.click();
+
+        // Clean up
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error(`ERROR Filling out Template:`);
+        console.error(error);
+      }
+    })
+    .catch((error) => {
+      console.error(`ERROR Loading Template:`);
+      console.error(error);
+    });
+};
