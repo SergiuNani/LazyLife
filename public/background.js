@@ -6,10 +6,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         {
           target: { tabId: activeTab.id },
           function: () => {
-            //Print HTML
             let bodyHTML =
               document.querySelector("body .main_center").innerHTML;
-            // console.log(JSON.stringify(bodyHTML));
             return bodyHTML;
           },
         },

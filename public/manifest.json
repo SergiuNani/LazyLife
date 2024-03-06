@@ -8,8 +8,8 @@
     },
     "permissions": ["scripting", "activeTab","nativeMessaging","contextMenus","tabs"],
     "host_permissions": [
-        "http://*/*",
-        "https://*/*"
+        "http://portal.tsr/*",
+        "https://portal.tsr/*"
     ],
     "icons": {
         "32": "Gabi.png",
@@ -18,8 +18,8 @@
     },
     "background":{
         "service_worker": "background.js",
-        "type": "module"
-
+       "type": "module"
+  
     }
   
   }

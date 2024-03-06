@@ -57,6 +57,7 @@ export const DocxTemplaterX = (htmlContent) => {
       mimeType:
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     });
-    saveAs(out, "xxxxx.docx");
+    var FileName = `P099 ${dataToAdd["RMA code"]} - RMA Report (${dataToAdd["Client"]}) `;
+    saveAs(out, `${FileName}.docx`);
   });
 };

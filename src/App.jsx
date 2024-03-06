@@ -1,5 +1,5 @@
 import Drunk from "/Drunk.png";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import { ExtractUsefulInfo } from "./Functions";
 import { HTML_original } from "./testData";
@@ -7,15 +7,16 @@ import { renderHtmlContent } from "./AppHelper";
 import { DocxTemplaterX } from "./DocxTemplater";
 
 function App() {
-  // const [htmlContent, setHtmlContent] = useState([]);
-  const [htmlContent, setHtmlContent] = useState(
-    ExtractUsefulInfo(HTML_original)
-  );
+  const [htmlContent, setHtmlContent] = useState([]);
+  const firstMount = useRef(false);
+  // const [htmlContent, setHtmlContent] = useState(
+  //   ExtractUsefulInfo(HTML_original)
+  // );
 
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.ctrlKey && event.key.toLowerCase() === "q") {
-        DocxTemplaterX(htmlContent);
+        // DocxTemplaterX(htmlContent);
       }
     };
     window.addEventListener("keydown", handleKeyPress);
@@ -24,6 +25,13 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (firstMount.current) {
+      DocxTemplaterX(htmlContent);
+    } else {
+      firstMount.current = true;
+    }
+  }, [htmlContent]);
   const handleClick = () => {
     chrome.runtime.sendMessage({ action: "getHTML" }, (response) => {
       const bodyHTML = response.bodyHTML;
@@ -39,19 +47,16 @@ function App() {
         <img src={Drunk} className="logo" alt="Vite logo" />
       </div>
       <div className="card">
-        <button onClick={handleClick}>CLICK ME</button>
-
-        <button onClick={DocxTemplaterX(htmlContent)}>WordPreBuild</button>
-        <button
+        <button onClick={handleClick} style={{ fontSize: "1.2rem" }}>
+          CLICK ME
+        </button>
+        {/* <button
           onClick={() => {
-            const arr = ExtractUsefulInfo(HTML_original);
-            setHtmlContent(arr);
+            DocxTemplaterX(ExtractUsefulInfo(HTML_original));
           }}
         >
-          ShowExtraction
-        </button>
-
-        {/* <div>{renderHtmlContent(htmlContent)}</div> */}
+          Demo
+        </button> */}
       </div>
     </>
   );
