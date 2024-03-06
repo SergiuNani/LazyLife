@@ -9,7 +9,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             //Print HTML
             let bodyHTML =
               document.querySelector("body .main_center").innerHTML;
-            console.log(JSON.stringify(bodyHTML));
+            // console.log(JSON.stringify(bodyHTML));
             return bodyHTML;
           },
         },

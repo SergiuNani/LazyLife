@@ -1,17 +1,28 @@
 import Drunk from "/Drunk.png";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
-import { ExtractUsefulInfo, generateDoc } from "./Functions";
+import { ExtractUsefulInfo } from "./Functions";
 import { HTML_original } from "./testData";
 import { renderHtmlContent } from "./AppHelper";
 import { DocxTemplaterX } from "./DocxTemplater";
-import { generateDocument } from "./generic";
 
 function App() {
   // const [htmlContent, setHtmlContent] = useState([]);
   const [htmlContent, setHtmlContent] = useState(
     ExtractUsefulInfo(HTML_original)
   );
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.ctrlKey && event.key.toLowerCase() === "q") {
+        DocxTemplaterX(htmlContent);
+      }
+    };
+    window.addEventListener("keydown", handleKeyPress);
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, []);
 
   const handleClick = () => {
     chrome.runtime.sendMessage({ action: "getHTML" }, (response) => {
@@ -29,15 +40,8 @@ function App() {
       </div>
       <div className="card">
         <button onClick={handleClick}>CLICK ME</button>
-        <button
-          onClick={() => {
-            generateDoc(htmlContent);
-          }}
-        >
-          To Word
-        </button>
-        <button onClick={DocxTemplaterX}>WordPreBuild</button>
-        <button onClick={generateDocument}>XXX</button>
+
+        <button onClick={DocxTemplaterX(htmlContent)}>WordPreBuild</button>
         <button
           onClick={() => {
             const arr = ExtractUsefulInfo(HTML_original);
@@ -47,8 +51,7 @@ function App() {
           ShowExtraction
         </button>
 
-        <div>{renderHtmlContent(htmlContent)}</div>
-        {/* <div>{htmlContent}</div> */}
+        {/* <div>{renderHtmlContent(htmlContent)}</div> */}
       </div>
     </>
   );
