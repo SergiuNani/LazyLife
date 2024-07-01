@@ -6,13 +6,14 @@ import { HTML_original } from "./testData";
 import { DocxTemplaterX } from "./DocxTemplater";
 
 function App() {
-    const [htmlContent, setHtmlContent] = useState([]);
+    // const [htmlContent, setHtmlContent] = useState([]);
     const firstMount = useRef(false);
-    // const [htmlContent, setHtmlContent] = useState(
-    //     ExtractUsefulInfo(HTML_original)
-    // );
+    const [htmlContent, setHtmlContent] = useState(
+        ExtractUsefulInfo(HTML_original)
+    );
 
     useEffect(() => {
+        console.log(22)
         const handleKeyPress = (event) => {
             if (event.ctrlKey && event.key.toLowerCase() === "q") {
                 // DocxTemplaterX(htmlContent);
@@ -25,12 +26,16 @@ function App() {
     }, []);
 
     useEffect(() => {
+        //This one is useless, and its here for convenience
+        //Each time you save a new docx is saved
         if (firstMount.current) {
             DocxTemplaterX(htmlContent);
+            console.log(11)
         } else {
             firstMount.current = true;
         }
     }, [htmlContent]);
+
     const handleClick = () => {
         chrome.runtime.sendMessage({ action: "getHTML" }, (response) => {
             const bodyHTML = response.bodyHTML;
@@ -52,6 +57,7 @@ function App() {
                 <button
                     onClick={() => {
                         DocxTemplaterX(ExtractUsefulInfo(HTML_original));
+                        console.log(33)
                     }}
                 >
                     Demo
