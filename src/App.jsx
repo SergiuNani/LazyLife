@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import { ExtractUsefulInfo } from "./Functions";
 import { HTML_original } from "./testData";
-import { renderHtmlContent } from "./AppHelper";
 import { DocxTemplaterX } from "./DocxTemplater";
 
 function App() {

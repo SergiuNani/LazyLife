@@ -55,6 +55,7 @@ function RefactorObjects(TempTable) {
         const dateToday = new Date();
 
         if (obj.Data.length > 1) {
+            //Here we have groups which we sort and result into a matrix
             var latestDefectCode = "";
             //Reordered only so that at the end they will be in order TD00 TD54 ...
             var reorderedDataField = obj.Data.sort((a, b) => {
