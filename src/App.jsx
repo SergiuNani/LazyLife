@@ -7,11 +7,11 @@ import { renderHtmlContent } from "./AppHelper";
 import { DocxTemplaterX } from "./DocxTemplater";
 
 function App() {
-    // const [htmlContent, setHtmlContent] = useState([]);
+    const [htmlContent, setHtmlContent] = useState([]);
     const firstMount = useRef(false);
-    const [htmlContent, setHtmlContent] = useState(
-        ExtractUsefulInfo(HTML_original)
-    );
+    // const [htmlContent, setHtmlContent] = useState(
+    //     ExtractUsefulInfo(HTML_original)
+    // );
 
     useEffect(() => {
         const handleKeyPress = (event) => {
