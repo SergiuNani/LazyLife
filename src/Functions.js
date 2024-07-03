@@ -1,4 +1,3 @@
-let DetaliiRMA = {};
 let TempTable = [];
 let MainObject4_DocxTemplater = {};
 
@@ -41,12 +40,6 @@ function createObjectAndAppend(arr) {
     }
 }
 function RefactorObjects(TempTable) {
-    //   employeeList: [
-    //     { id: 28521, name: "FranPUAAAAAAAAAAk", age: 34, city: "Melbourne" },
-    //     { id: 84973, name: "Chloe", age: 28, city: "Perth" },
-    //     { id: 10349, name: "Hank", age: 68, city: "Hobart" },
-    //     { id: 44586, name: "Gordon", age: 47, city: "Melbourne" },
-    //   ],
     var Table1 = [];
     var Table2 = [];
     var counter = 1;
@@ -56,7 +49,6 @@ function RefactorObjects(TempTable) {
 
         if (obj.Data.length > 1) {
             //Here we have groups which we sort and result into a matrix
-            var latestDefectCode = "";
             //Reordered only so that at the end they will be in order TD00 TD54 ...
             var reorderedDataField = obj.Data.sort((a, b) => {
                 const valueA = a[1].trim().replace("TD", "");
@@ -85,7 +77,7 @@ function RefactorObjects(TempTable) {
                 var investigator = "";
                 var investigatorMemory = "";
                 sameCodeArr.forEach((oneRow) => {
-                    SN_collection += `${oneRow[0]}, `;
+                    SN_collection += ` ${oneRow[0]},`;
                     var isRepaired = oneRow[3].trim() === "true";
                     if (isRepaired) QtyRepaired++;
                     totalCost += parseFloat(oneRow[7]);
@@ -95,6 +87,7 @@ function RefactorObjects(TempTable) {
                     }
                 });
                 TotalCostFinal += totalCost;
+                SN_collection = SN_collection.slice(0, -1);//Removes the last comma
                 //MultiRows
                 var tableObj1 = {};
                 var tableObj2 = {};
@@ -113,8 +106,16 @@ function RefactorObjects(TempTable) {
                 StringBuilder.splice(1, 0, obj.Description.trim());
                 StringBuilder = StringBuilder.join(" ");
 
+                var commonAnalysisExplanation = "";
+
                 if (sameCodeArr.length > 1) {
-                    StringBuilder = `The ${obj.Description} drive with SN: ${SN_collection} were `;
+                    var index_string_cut = obj.Data[0][6].indexOf(obj.Data[0][0])
+                    if (index_string_cut != -1) {
+                        commonAnalysisExplanation = obj.Data[0][6].slice(index_string_cut + 6)
+                    }
+                    console.log(commonAnalysisExplanation)
+                    // commonAnalysisExplanation = obj.Data[0][6].
+                    StringBuilder = `The ${obj.Description}drive with SN: ${SN_collection} ---${commonAnalysisExplanation}`;
                 }
                 tableObj2["Analysis"] = StringBuilder;
                 tableObj2["BY"] = investigator;
@@ -131,7 +132,7 @@ function RefactorObjects(TempTable) {
             tableObj1["POS"] = counter;
             tableObj1["PartNumber"] = obj.PID;
             tableObj1["DriveName"] = obj.Description;
-            tableObj1["SN"] = obj.Data[0][0];
+            tableObj1["SN"] = " " + obj.Data[0][0];
             tableObj1["QTY"] = 1;
             tableObj1["FailureDescription"] = obj.Data[0][2];
             tableObj1["FailureCode"] = obj.Data[0][1];
@@ -159,6 +160,8 @@ function RefactorObjects(TempTable) {
 }
 
 export function ExtractUsefulInfo(bodyHTML) {
+    MainObject4_DocxTemplater = {};
+    TempTable = [];
     var parser = new DOMParser();
     var xmlDoc = parser.parseFromString(
         bodyHTML.replace(/<br>/g, " "),
