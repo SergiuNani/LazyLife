@@ -12,7 +12,6 @@ function createObjectAndAppend(arr) {
         obj["Description"] = arr[1].querySelector("span").innerText;
 
         arr = arr.slice(3).slice(0, -1);
-        // console.log(arr)
         arr.forEach((el, index) => {
             textArr[index] = el.querySelector("span").innerText;
             if (index == 3) {
@@ -69,7 +68,6 @@ function RefactorObjects(TempTable) {
                 var sameCodeArr = reorderedDataField.filter(
                     (el) => el[1] == failureCode
                 );
-                // console.log(sameCodeArr);
                 var firstRow = sameCodeArr[0];
                 var SN_collection = "";
                 var QtyRepaired = 0;
@@ -113,7 +111,6 @@ function RefactorObjects(TempTable) {
                     if (index_string_cut != -1) {
                         commonAnalysisExplanation = obj.Data[0][6].slice(index_string_cut + 6)
                     }
-                    console.log(commonAnalysisExplanation)
                     // commonAnalysisExplanation = obj.Data[0][6].
                     StringBuilder = `The ${obj.Description}drive with SN: ${SN_collection} ---${commonAnalysisExplanation}`;
                 }
@@ -188,8 +185,8 @@ export function ExtractUsefulInfo(bodyHTML) {
 
     MainObject4_DocxTemplater["SignDate"] = `${dateToday.getDate()}/${dateToday.getMonth() + 1
         }/${dateToday.getFullYear()}`;
-    //---------------------
-    //Assumption: the second .main_elem is the data table"------------------------------
+
+    // =================== Second Table MAIN =====================
 
     var secondTable = HTML_XML[1].querySelector("tbody")?.querySelectorAll("tr");
 
@@ -202,6 +199,30 @@ export function ExtractUsefulInfo(bodyHTML) {
         }
     });
     RefactorObjects(TempTable);
+
+    // =================== Third Table : NOTES =====================
+
+    var thirdTable_Notes = HTML_XML[2].querySelector("tbody")?.querySelectorAll("tr");
+    var thirdTableLen = thirdTable_Notes.length;
+
+    var FinalDecision = "";
+    var NotesString = "";
+    thirdTable_Notes?.forEach((el, index) => {
+
+        if (index < thirdTableLen - 3 && index != 0) {
+            NotesString += el.querySelector("td span").innerText + "\n\n";
+        }
+        //final Decision
+        if (index == thirdTableLen - 1) {
+            FinalDecision = thirdTable_Notes[index].querySelector("td span").innerText;
+        }
+
+
+    })
+    NotesString = NotesString.replace(/\n\n$/, "");//Remove the trailing empty lines 
+    MainObject4_DocxTemplater["Notes"] = NotesString;
+    MainObject4_DocxTemplater["FinalDecision"] = FinalDecision;
+
 
     return MainObject4_DocxTemplater;
 }
