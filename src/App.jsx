@@ -42,6 +42,12 @@ function App() {
             setHtmlContent(ExtractUsefulInfo(bodyHTML));
         });
     };
+    useEffect(() => {
+        ///Necessary
+        if (firstMount.current) {
+            DocxTemplaterX(htmlContent);
+        }
+    }, [htmlContent]);
 
     const handleClickButtonIndireclty = () => {
         chrome.runtime.sendMessage({ action: "clickButtonWWW" });
