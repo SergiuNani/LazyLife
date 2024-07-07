@@ -16,6 +16,8 @@ function App() {
 
     const [DisplayOption, setDisplayOption] = useState(1)
     //   const [htmlContent, setHtmlContent] = useState([]);
+
+    const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
     const firstMount = useRef(false);
     const [htmlContent, setHtmlContent] = useState(
         ExtractUsefulInfo(HTML_raw_example)
@@ -41,7 +43,10 @@ function App() {
         });
     };
 
-    const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+    const handleClickButtonIndireclty = () => {
+        chrome.runtime.sendMessage({ action: "clickButtonWWW" });
+    };
+
 
     useEffect(() => {
         const img = new Image();
@@ -52,7 +57,7 @@ function App() {
         };
         img.onerror = () => {
             console.log("Error loading the image.");
-            setDisplayOption(0) //user has played woth the picture
+            setDisplayOption(0) //user has played with the picture
         };
     }, []);
 
@@ -63,6 +68,11 @@ function App() {
             setDisplayOption(0) //user has played woth the picture
         }
     }, [firstMount.current])
+
+
+
+
+    console.log("HERERERERERERRERER")
     return (
         DisplayOption ?
             <section style={{ border: "1px solid blue", width: "800px", overflow: "hidden" }}>
@@ -81,12 +91,11 @@ function App() {
                     {/* > */}
                     {/*     Demo */}
                     {/* </button> */}
+                    <button onClick={handleClickButtonIndireclty}>
+                        ClickIndirectly
+                    </button>
                     <button onClick={makeTextArea}>
                         make TextArea
-                    </button>
-
-                    <button>
-                        Autofill
                     </button>
                 </div>
 

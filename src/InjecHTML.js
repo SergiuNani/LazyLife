@@ -1,5 +1,5 @@
 export function makeTextArea() {
-    console.log("yeeee ")
+    console.log("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF ")
 
 
     chrome.runtime.sendMessage({ action: "getHTML" }, (response) => {
