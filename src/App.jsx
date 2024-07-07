@@ -4,6 +4,7 @@ import Daniel2 from "/Daniel2.jpeg";
 import Daniel3 from "/Daniel3.jpeg";
 import Daniel4 from "/Daniel4.jpeg";
 import Daniel5 from "/Daniel5.jpeg";
+import { makeTextArea } from "./InjecHTML.js"
 
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
@@ -57,7 +58,7 @@ function App() {
 
     useEffect(() => {
         if (firstMount.current && (imageSize.width != 750 || imageSize.height != 1334)) {
-            console.log("Put the image back dawg. U think a haker now. Im 69 moves ahead bruh!")
+            console.log("Put the image back dawg. U think a hacker now. Im 69 moves ahead bruh!")
             console.log(imageSize.width)
             setDisplayOption(0) //user has played woth the picture
         }
@@ -65,6 +66,30 @@ function App() {
     return (
         DisplayOption ?
             <section style={{ border: "1px solid blue", width: "800px", overflow: "hidden" }}>
+                <section id="IDID">
+                    insert here
+                </section>
+                <div className="card">
+                    <button onClick={handleClick} style={{ fontSize: "1.2rem" }}>
+                        CLICK ME
+                    </button>
+                    {/* <button */}
+                    {/*     onClick={() => { */}
+                    {/*         DocxTemplaterX(ExtractUsefulInfo(HTML_raw_example)); */}
+                    {/*         console.log(33); */}
+                    {/*     }} */}
+                    {/* > */}
+                    {/*     Demo */}
+                    {/* </button> */}
+                    <button onClick={makeTextArea}>
+                        make TextArea
+                    </button>
+
+                    <button>
+                        Autofill
+                    </button>
+                </div>
+
                 <div
                     style={{
                         display: "flex",
@@ -97,19 +122,6 @@ function App() {
                         </div>
                     </div>
                 }
-                <div className="card">
-                    <button onClick={handleClick} style={{ fontSize: "1.2rem" }}>
-                        CLICK ME
-                    </button>
-                    <button
-                        onClick={() => {
-                            DocxTemplaterX(ExtractUsefulInfo(HTML_raw_example));
-                            console.log(33);
-                        }}
-                    >
-                        Demo
-                    </button>
-                </div>
             </section> : <div style={{
                 fontSize: "3rem"
             }}>Put the image back dawg. U think a hacker now. Im 69 moves ahead bruh!</div>
