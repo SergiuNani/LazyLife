@@ -1,13 +1,20 @@
-export function makeTextArea() {
-    console.log("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF ")
+export const handleAutocomplete = async () => {
+    let [tab] = await chrome.tabs.query({ active: true });
+    chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => {
+            document.querySelector("body").style.background = "#444"
 
+            const EnterEvent = new KeyboardEvent('keydown', {
+                key: 'Enter',
+                code: 'Enter',
+                which: 13,
+                keyCode: 13,
+            });
 
-    chrome.runtime.sendMessage({ action: "getHTML" }, (response) => {
-        const bodyHTML = response.bodyHTML;
-        // setHtmlContent(bodyHTML);
-        document.querySelector("#IDID").innerHTML = bodyHTML
-        console.log(bodyHTML)
-    });
+            document.querySelector("#buttonWWW").click();
+            document.getElementById('TextAreaId').dispatchEvent(EnterEvent);
+        }
+    })
 
-    document.querySelector("#IDID").innerHTML = "piula"
-}
+};

@@ -4,7 +4,7 @@ import Daniel2 from "/Daniel2.jpeg";
 import Daniel3 from "/Daniel3.jpeg";
 import Daniel4 from "/Daniel4.jpeg";
 import Daniel5 from "/Daniel5.jpeg";
-import { makeTextArea } from "./InjecHTML.js"
+import { handleAutocomplete } from "./InjecHTML.js"
 
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
@@ -38,7 +38,6 @@ function App() {
     const handleClick = () => {
         chrome.runtime.sendMessage({ action: "getHTML" }, (response) => {
             const bodyHTML = response.bodyHTML;
-            // setHtmlContent(bodyHTML);
             setHtmlContent(ExtractUsefulInfo(bodyHTML));
         });
     };
@@ -48,10 +47,6 @@ function App() {
             DocxTemplaterX(htmlContent);
         }
     }, [htmlContent]);
-
-    const handleClickButtonIndireclty = () => {
-        chrome.runtime.sendMessage({ action: "clickButtonWWW" });
-    };
 
 
     useEffect(() => {
@@ -75,9 +70,6 @@ function App() {
         }
     }, [firstMount.current])
 
-
-
-
     console.log("HERERERERERERRERER")
     return (
         DisplayOption ?
@@ -97,11 +89,8 @@ function App() {
                     {/* > */}
                     {/*     Demo */}
                     {/* </button> */}
-                    <button onClick={handleClickButtonIndireclty}>
-                        ClickIndirectly
-                    </button>
-                    <button onClick={makeTextArea}>
-                        make TextArea
+                    <button onClick={handleAutocomplete}>
+                        AutoComplete
                     </button>
                 </div>
 
