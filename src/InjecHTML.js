@@ -18,3 +18,13 @@ export const handleAutocomplete = async () => {
     })
 
 };
+
+
+export const handleIncreaseSize = () => {
+    console.log("Waiting")
+}
+
+
+export const handleDecomplete = () => {
+    console.log("Waiting")
+}

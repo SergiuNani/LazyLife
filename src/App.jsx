@@ -4,7 +4,7 @@ import Daniel2 from "/Daniel2.jpeg";
 import Daniel3 from "/Daniel3.jpeg";
 import Daniel4 from "/Daniel4.jpeg";
 import Daniel5 from "/Daniel5.jpeg";
-import { handleAutocomplete } from "./InjecHTML.js"
+import { handleAutocomplete, handleIncreaseSize, handleDecomplete } from "./InjecHTML.js"
 
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
@@ -15,25 +15,34 @@ import { DocxTemplaterX } from "./DocxTemplater";
 function App() {
 
     const [DisplayOption, setDisplayOption] = useState(1)
-    //   const [htmlContent, setHtmlContent] = useState([]);
+    const [Mode, setMode] = useState("dev") // dev vs user
 
+    const [htmlContent, setHtmlContent] = useState([]);
     const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
     const firstMount = useRef(false);
-    const [htmlContent, setHtmlContent] = useState(
-        ExtractUsefulInfo(HTML_raw_example)
-    );
+    // const [htmlContent, setHtmlContent] = useState(
+    //     ExtractUsefulInfo(HTML_raw_example)
+    // );
 
     useEffect(() => {
         const handleKeyPress = (event) => {
             if (event.ctrlKey && event.key.toLowerCase() === "q") {
-                DocxTemplaterX(htmlContent);
+                // DocxTemplaterX(htmlContent);
+            } else if (event.ctrlKey && event.key.toLowerCase() === "d") {
+                event.preventDefault()
+                if (Mode == "dev") {
+                    setMode("user")
+                } else {
+                    setMode("dev")
+
+                }
             }
         };
         window.addEventListener("keydown", handleKeyPress);
         return () => {
             window.removeEventListener("keydown", handleKeyPress);
         };
-    }, []);
+    }, [Mode]);
 
     const handleClick = () => {
         chrome.runtime.sendMessage({ action: "getHTML" }, (response) => {
@@ -44,10 +53,9 @@ function App() {
     useEffect(() => {
         ///Necessary
         if (firstMount.current) {
-            DocxTemplaterX(htmlContent);
+            // DocxTemplaterX(htmlContent);
         }
     }, [htmlContent]);
-
 
     useEffect(() => {
         const img = new Image();
@@ -70,29 +78,53 @@ function App() {
         }
     }, [firstMount.current])
 
-    console.log("HERERERERERERRERER")
     return (
         DisplayOption ?
             <section style={{ border: "1px solid blue", width: "800px", overflow: "hidden" }}>
+
                 <section id="IDID">
                     insert here
                 </section>
-                <div className="card">
-                    <button onClick={handleClick} style={{ fontSize: "1.2rem" }}>
-                        CLICK ME
-                    </button>
-                    {/* <button */}
-                    {/*     onClick={() => { */}
-                    {/*         DocxTemplaterX(ExtractUsefulInfo(HTML_raw_example)); */}
-                    {/*         console.log(33); */}
-                    {/*     }} */}
-                    {/* > */}
-                    {/*     Demo */}
-                    {/* </button> */}
-                    <button onClick={handleAutocomplete}>
-                        AutoComplete
-                    </button>
-                </div>
+
+                <section className="card">
+                    {/* =================== Buttons ===================== */}
+                    <div style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        flexDirection: 'column'
+                    }}>
+
+                        <button onClick={handleClick} >
+                            Generate Doc
+                        </button>
+                        <button onClick={handleAutocomplete}>
+                            AutoComplete
+                        </button>
+                        <button onClick={handleIncreaseSize}>
+                            Increase Size
+                        </button>
+                    </div>
+
+                    {Mode == "dev" &&
+                        <section style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            flexDirection: 'column'
+                        }}>
+
+                            <button
+                                onClick={() => {
+                                    DocxTemplaterX(ExtractUsefulInfo(HTML_raw_example));
+                                    console.log(33);
+                                }} >
+                                Download Demo </button>
+
+                            <button onClick={handleDecomplete} >
+                                Decomplete </button>
+                        </section>
+                    }
+
+                </section>
 
                 <div
                     style={{
