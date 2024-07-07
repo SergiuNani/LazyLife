@@ -13,7 +13,7 @@ import { DocxTemplaterX } from "./DocxTemplater";
 
 function App() {
 
-    const [DisplayOption, setDisplayOption] = useState(2)
+    const [DisplayOption, setDisplayOption] = useState(1)
     //   const [htmlContent, setHtmlContent] = useState([]);
     const firstMount = useRef(false);
     const [htmlContent, setHtmlContent] = useState(
@@ -32,17 +32,6 @@ function App() {
         };
     }, []);
 
-    // useEffect(() => {
-    //   //This one is useless, and its here for convenience
-    //   //Each time you save a new docx is saved
-    //   if (firstMount.current) {
-    //     DocxTemplaterX(htmlContent);
-    //     console.log(11);
-    //   } else {
-    //     firstMount.current = true;
-    //   }
-    // }, [htmlContent]);
-
     const handleClick = () => {
         chrome.runtime.sendMessage({ action: "getHTML" }, (response) => {
             const bodyHTML = response.bodyHTML;
@@ -51,52 +40,80 @@ function App() {
         });
     };
 
+    const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+
+    useEffect(() => {
+        const img = new Image();
+        img.src = Daniel1;
+        img.onload = () => {
+            setImageSize({ width: img.width, height: img.height });
+            firstMount.current = true
+        };
+        img.onerror = () => {
+            console.log("Error loading the image.");
+            setDisplayOption(0) //user has played woth the picture
+        };
+    }, []);
+
+    useEffect(() => {
+        if (firstMount.current && (imageSize.width != 750 || imageSize.height != 1334)) {
+            console.log("Put the image back dawg. U think a haker now. Im 69 moves ahead bruh!")
+            console.log(imageSize.width)
+            setDisplayOption(0) //user has played woth the picture
+        }
+    }, [firstMount.current])
     return (
-        <section style={{ border: "1px solid blue", width: "800px", overflow: "hidden" }}>
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    padding: "2rem",
-                }}
-            >
-                <h1>Lazy Life V2</h1>
-                <img src={Drunk} className="logo" alt="Logo image here" />
-            </div>
-            <img src={Daniel1} alt="Logo image here" />
-            <div style={{
-                display: "flex",
-                gap: '1rem'
-            }}>
-
-                <img src={Daniel3} className="daniel" alt="Logo image here" />
-                <img src={Daniel4} className="daniel" alt="Logo image here" />
-
-            </div>
-            {DisplayOption == 2 &&
-
-                <div style={{
-                    display: "flex",
-                    gap: '1rem'
-                }}>
-                    <img src={Daniel2} className="daniel" alt="Logo image here" />
-                    <img src={Daniel5} className="daniel" alt="Logo image here" />
-                </div>
-            }
-            <div className="card">
-                <button onClick={handleClick} style={{ fontSize: "1.2rem" }}>
-                    CLICK ME
-                </button>
-                <button
-                    onClick={() => {
-                        DocxTemplaterX(ExtractUsefulInfo(HTML_raw_example));
-                        console.log(33);
+        DisplayOption ?
+            <section style={{ border: "1px solid blue", width: "800px", overflow: "hidden" }}>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "2rem",
                     }}
                 >
-                    Demo
-                </button>
-            </div>
-        </section>
+                    <h1>Lazy Life V2</h1>
+                    <img src={Drunk} className="logo" alt="Logo image here" />
+                </div>
+                <img src={Daniel1} alt="Logo image here" />
+                {DisplayOption == 2 &&
+                    <div>
+
+                        <div style={{
+                            display: "flex",
+                            gap: '1rem'
+                        }}>
+
+                            <img src={Daniel3} className="daniel" alt="Logo image here" />
+                            <img src={Daniel4} className="daniel" alt="Logo image here" />
+
+                        </div>
+                        <div style={{
+                            display: "flex",
+                            gap: '1rem'
+                        }}>
+                            <img src={Daniel2} className="daniel" alt="Logo image here" />
+                            <img src={Daniel5} className="daniel" alt="Logo image here" />
+                        </div>
+                    </div>
+                }
+                <div className="card">
+                    <button onClick={handleClick} style={{ fontSize: "1.2rem" }}>
+                        CLICK ME
+                    </button>
+                    <button
+                        onClick={() => {
+                            DocxTemplaterX(ExtractUsefulInfo(HTML_raw_example));
+                            console.log(33);
+                        }}
+                    >
+                        Demo
+                    </button>
+                </div>
+            </section> : <div style={{
+                fontSize: "3rem"
+            }}>Put the image back dawg. U think a hacker now. Im 69 moves ahead bruh!</div>
+
     );
 }
 
