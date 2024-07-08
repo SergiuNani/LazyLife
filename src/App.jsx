@@ -14,7 +14,7 @@ import { DocxTemplaterX } from "./DocxTemplater";
 
 function App() {
 
-    const [DisplayOption, setDisplayOption] = useState(1)
+    const [DisplayOption, setDisplayOption] = useState(2)
     const [Mode, setMode] = useState("dev") // dev vs user
 
     const [htmlContent, setHtmlContent] = useState([]);
@@ -53,7 +53,7 @@ function App() {
     useEffect(() => {
         ///Necessary
         if (firstMount.current) {
-            // DocxTemplaterX(htmlContent);
+            DocxTemplaterX(htmlContent);
         }
     }, [htmlContent]);
 
