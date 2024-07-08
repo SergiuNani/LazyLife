@@ -4,7 +4,7 @@ import Daniel2 from "/Daniel2.jpeg";
 import Daniel3 from "/Daniel3.jpeg";
 import Daniel4 from "/Daniel4.jpeg";
 import Daniel5 from "/Daniel5.jpeg";
-import { handleAutocomplete, handleIncreaseSize, handleDecomplete } from "./InjecHTML.js"
+import { handleAutocomplete, handleIncreaseSize, handleDefectFilling } from "./InjecHTML.js"
 
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
@@ -82,16 +82,12 @@ function App() {
         DisplayOption ?
             <section style={{ border: "1px solid blue", width: "800px", overflow: "hidden" }}>
 
-                <section id="IDID">
-                    insert here
-                </section>
-
                 <section className="card">
                     {/* =================== Buttons ===================== */}
                     <div style={{
                         display: "flex",
                         justifyContent: "center",
-                        flexDirection: 'column'
+                        flexDirection: 'row'
                     }}>
 
                         <button onClick={handleClick} >
@@ -99,6 +95,9 @@ function App() {
                         </button>
                         <button onClick={handleAutocomplete}>
                             AutoComplete
+                        </button>
+                        <button onClick={handleDefectFilling}>
+                            Complete based on Defect
                         </button>
                         <button onClick={handleIncreaseSize}>
                             Increase Size
@@ -119,7 +118,7 @@ function App() {
                                 }} >
                                 Download Demo </button>
 
-                            <button onClick={handleDecomplete} >
+                            <button >
                                 Decomplete </button>
                         </section>
                     }
