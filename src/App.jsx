@@ -4,7 +4,7 @@ import Daniel2 from "/Daniel2.jpeg";
 import Daniel3 from "/Daniel3.jpeg";
 import Daniel4 from "/Daniel4.jpeg";
 import Daniel5 from "/Daniel5.jpeg";
-import { handleAutocomplete, handleIncreaseSize, handleDefectFilling } from "./InjecHTML.js"
+import { handleAutocomplete, handleIncreaseSize, handleDefectFilling, testChromeAPI, } from "./InjecHTML.js"
 
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
@@ -118,8 +118,11 @@ function App() {
                                 }} >
                                 Download Demo </button>
 
-                            <button >
-                                Decomplete </button>
+
+
+                            <button onClick={testChromeAPI}>
+                                TestAPIChrome </button>
+                            <p> - The test button will print a msg in the Console. If the message is not printed then the other buttons will also not work</p>
                         </section>
                     }
 
