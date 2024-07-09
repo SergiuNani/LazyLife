@@ -7,7 +7,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     target: { tabId: activeTab.id },
                     function: () => {
                         let bodyHTML = document.querySelector("body .main_center")?.innerHTML;
-                        document.querySelector("body").style.background = "red"
                         return bodyHTML;
                     },
                 },

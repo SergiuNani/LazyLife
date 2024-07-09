@@ -82,20 +82,17 @@ export const handleAutocomplete = async () => {
 
                 var GroupLeaderArray; // the TR which has 13 elements
                 table.forEach(tr => {
-                    // console.log(tr.children[0].innerText);
                     if (tr.children.length == 13) {
                         //Leader
                         //
                         GroupLeaderArray = tr.children;
 
-                        console.log("=============================  End Group =============================== ")
                     } else if (tr.children.length == 10) {
                         //Simole row in the group
                         //
                         Array.from(tr.children).forEach((subElem, index) => {
                             if (index != 0 && index != 9 && index != 3) {
                                 var ElementOfInterest = subElem.querySelector("span")
-                                // console.log(ElementOfInterest.innerText)
                                 if (ElementOfInterest.innerText == "" || ElementOfInterest.innerText === "\u00A0") {
                                     // ElementOfInterest.innerText = "xxxx"
                                     ElementOfInterest.setAttribute("data-value", '\u00A0');
@@ -141,7 +138,6 @@ export const handleAutocomplete = async () => {
                             }
 
                         })
-                        console.log("===================  End row =====================i")
                     }
                 });
 
@@ -175,16 +171,77 @@ export const handleDefectFilling = async () => {
                 // We will take the table and sort it in groups (based on PartNumber) and the first row will represent the leader which will have the key information which
                 // will be later filled in the other empty slots
 
-                var GroupLeaderArray; // the TR which has 13 elements
-                table.forEach(tr => {
-                    // console.log(tr.children[0].innerText);
+                var currentGroupLeaderIndex;
+                table.forEach((tr, tableIndex) => {
                     if (tr.children.length == 13) {
-                        //Leader
-                        //
                         GroupLeaderArray = tr.children;
+                        currentGroupLeaderIndex = tableIndex
 
-                        console.log("=============================  End Group =============================== ")
                     } else if (tr.children.length == 10) {
+                        currentDefectCode = tr.children[1].querySelector("span").innerText.trim()
+                        for (var i = currentGroupLeaderIndex; i < tableIndex; i++) {
+                            var prevRow = Array.from(table[i].children)
+                            var rowLength = prevRow.length
+                            var iterationDefentCode = ""
+
+                            if (rowLength == 13) {
+                                prevRow = prevRow.slice(3)
+                            }
+                            iterationDefentCode = prevRow[1].querySelector("span").innerText.trim()
+
+                            if (iterationDefentCode == currentDefectCode) {
+                                i = tableIndex //end loop
+                                Array.from(tr.children).forEach((subElem, index) => {
+                                    if (index != 0 && index != 9 && index != 3) {
+                                        var ElementOfInterest = subElem.querySelector("span")
+                                        if (ElementOfInterest.innerText == "" || ElementOfInterest.innerText === "\u00A0") {
+                                            ElementOfInterest.setAttribute("data-value", '\u00A0');
+
+                                            // Create the input element
+                                            const inputElement = document.createElement('input');
+                                            inputElement.setAttribute('type', 'edit');
+                                            inputElement.setAttribute('id', 'd-sndefect-2');
+                                            inputElement.setAttribute('class', 'Spanac');
+                                            inputElement.setAttribute('value', '');
+                                            inputElement.setAttribute('onkeydown', 'return ipe_process_key(this);');
+                                            // Append the input element to the span element
+                                            // var filling = GroupLeaderArray[index + 3].querySelector("span").innerText
+                                            var filling = prevRow[index].querySelector("span").innerText
+
+                                            if (index == 6) {
+                                                //Official Analysis - we will look into the string and detect the ProductID and change it with the correct one
+                                                //
+                                                var firstPID = prevRow[0].querySelector("span").innerText
+                                                var actualPID = tr.children[0].querySelector("span").innerText
+                                                filling = filling.replace(firstPID, actualPID)
+                                            }
+
+                                            inputElement.value = filling
+
+                                            ElementOfInterest.appendChild(inputElement);
+
+                                            const EnterEvent = new KeyboardEvent('keydown', {
+                                                key: 'Enter',
+                                                code: 'Enter',
+                                                which: 13,
+                                                keyCode: 13,
+                                            });
+                                            inputElement.dispatchEvent(EnterEvent); //This works  only if the element is an Input type
+
+                                        }
+                                    } else if (index == 3 && (tr.children[6].querySelector("span").innerText === "\u00A0" || tr.children[6].querySelector("span").innerText === "")) {
+                                        //We will check that checkbox only if the Official Analysis has text in it
+
+                                        var checkStatusGroup = prevRow[3].querySelector("input").checked
+                                        subElem.querySelector("input").checked = checkStatusGroup
+                                    }
+
+                                })
+
+                                // =============================  The end ur looking for===============================
+                            }
+                        }
+
                     }
                 });
 
