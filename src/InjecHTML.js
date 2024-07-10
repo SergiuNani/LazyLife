@@ -21,6 +21,20 @@ export const testChromeAPI = async () => {
     }
 }
 
+export const ModifyBackground = async () => {
+    try {
+        let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+        await chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            func: () => {
+                document.querySelector("body").style.background = "#444"
+            }
+        });
+    } catch (error) {
+        console.error("Error executing script: ", error);
+    }
+}
 export const handleIncreaseSize = async () => {
     try {
         // Query the active tab in the current window

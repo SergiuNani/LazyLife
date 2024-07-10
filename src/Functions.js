@@ -109,9 +109,13 @@ function RefactorObjects(TempTable) {
                 if (sameCodeArr.length > 1) {
                     var index_string_cut = obj.Data[0][6].indexOf(obj.Data[0][0])
                     if (index_string_cut != -1) {
+                        //Cut all the string from start till the PartNumber
                         commonAnalysisExplanation = obj.Data[0][6].slice(index_string_cut + 6)
+                    } else {
+                        //Couldnt find the PartNumber so we copyPasting the code
+                        commonAnalysisExplanation = obj.Data[0][6]
+
                     }
-                    // commonAnalysisExplanation = obj.Data[0][6].
                     StringBuilder = `The ${obj.Description}drive with SN: ${SN_collection} ---${commonAnalysisExplanation}`;
                 }
                 tableObj2["Analysis"] = StringBuilder;
