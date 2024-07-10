@@ -1,9 +1,4 @@
 import Drunk from "/Drunk.png";
-import Daniel1 from "/Daniel1.jpeg";
-import Daniel2 from "/Daniel2.jpeg";
-import Daniel3 from "/Daniel3.jpeg";
-import Daniel4 from "/Daniel4.jpeg";
-import Daniel5 from "/Daniel5.jpeg";
 import {
     handleAutocomplete,
     handleIncreaseSize,
@@ -19,22 +14,9 @@ import { HTML_raw_example } from "./testData";
 import { DocxTemplaterX } from "./DocxTemplater";
 
 function App() {
-    if (!localStorage.getItem("LazyLife")) {
-        localStorage.setItem("LazyLife", 3);
-    }
-    const [DisplayOption, setDisplayOption] = useState(
-        localStorage.getItem("LazyLife")
-    );
-
-    // 0 - Restric zone -user played with the pic
-    // 1 - Debug mode
-    // 2- Minimal
-    // 3 - all pictures
-
-    const [Mode, setMode] = useState("user"); // dev vs user
-
+    const [DisplayOption, setDisplayOption] = useState(1);
+    const [Mode, setMode] = useState("dev"); // dev vs user
     const [htmlContent, setHtmlContent] = useState([]);
-    const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
     const firstMount = useRef(false);
     // const [htmlContent, setHtmlContent] = useState(
     //     ExtractUsefulInfo(HTML_raw_example)
@@ -78,34 +60,11 @@ function App() {
         ///Necessary
         if (firstMount.current) {
             DocxTemplaterX(htmlContent);
+        } else {
+            firstMount.current = true
         }
-    }, [htmlContent]);
+    }, [htmlContent, firstMount.current]);
 
-    useEffect(() => {
-        const img = new Image();
-        img.src = Daniel1;
-        img.onload = () => {
-            setImageSize({ width: img.width, height: img.height });
-            firstMount.current = true;
-        };
-        img.onerror = () => {
-            console.log("Error loading the image.");
-            setDisplayOption(0); //user has played with the picture
-        };
-    }, []);
-
-    useEffect(() => {
-        if (
-            firstMount.current &&
-            (imageSize.width != 750 || imageSize.height != 1334)
-        ) {
-            console.log(
-                "Put the image back dawg. U think a hacker now. Im 69 moves ahead bruh!"
-            );
-            console.log(imageSize.width);
-            setDisplayOption(0); //user has played woth the picture
-        }
-    }, [firstMount.current]);
 
     return DisplayOption ? (
         <section
@@ -122,30 +81,6 @@ function App() {
                 <img src={Drunk} className="logo" alt="Logo image here" />
                 <h1>Lazy Life V2</h1>
             </div>
-            {DisplayOption >= 2 && <img src={Daniel1} alt="Logo image here" />}
-
-            {DisplayOption == 3 && (
-                <div>
-                    <div
-                        style={{
-                            display: "flex",
-                            gap: "1rem",
-                        }}
-                    >
-                        <img src={Daniel3} className="daniel" alt="Logo image here" />
-                        <img src={Daniel4} className="daniel" alt="Logo image here" />
-                    </div>
-                    <div
-                        style={{
-                            display: "flex",
-                            gap: "1rem",
-                        }}
-                    >
-                        <img src={Daniel2} className="daniel" alt="Logo image here" />
-                        <img src={Daniel5} className="daniel" alt="Logo image here" />
-                    </div>
-                </div>
-            )}
 
             <section className="card">
                 {/* =================== Buttons ===================== */}
@@ -169,9 +104,7 @@ function App() {
                 //Deug mode
                 <section
                     style={{
-                        // display: "flex",
                         justifyContent: "center",
-                        // flexDirection: 'row'
                     }}
                 >
                     <button

@@ -12,8 +12,8 @@
         "https://portal.tsr/*"
     ],
     "icons": {
-        "32": "Gabi.png",
-        "64": "Gabi.png"
+        "32": "Drunk.png",
+        "64": "Drunk.png"
 
     },
     "background":{
